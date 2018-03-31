@@ -12,6 +12,8 @@
 //----- Variables globales -----------------------------------------------------
 char ruta_dicc[] = "Diccionario.txt";
 char ruta_asccii[] = "Ascii.txt";
+char ruta_leame[] = "Léame.md";
+FILE *pntr_leame;
 FILE *pntr_asccii;
 FILE *puntr_dicc;
 FILE *fichero;
@@ -25,23 +27,24 @@ void op_menu(int);
 void menu_archivo();
 void nuevo_archivo();
 void abiri_archivo();
-void corrector_ort();
+void corrector();
 void corregir_texto();
 void cargar_archivo();
 void ver_diccionario();
-void acerca_de();
+void Leame();
 
 //----- Programa principal -----------------------------------------------------
 int main() { 
-
-	ascii_art();
+	
 	do { 
 		menu();
 		scanf("%d", &opcion);
 		while (getchar() != '\n');
 		op_menu(opcion);
+	} while(opcion != 5);
 
-	} while(opcion != 4);
+	// limpiar
+	//fcloseall();
 	return 0;
 }
 
@@ -49,22 +52,19 @@ int main() {
 void ascii_art() {
 	pntr_asccii = fopen(ruta_asccii,"r");
 	if (pntr_asccii == NULL) {
-    	printf("\nError al cargar la cabecera ascii del programa . . .\n\n");
+    	printf("\nError al cargar la cabecera (%s) ascii del programa \n\n", ruta_asccii);
     } 
     else {
     	while((caracter = fgetc(pntr_asccii)) != EOF) {
             printf("%c", caracter);
         }
-    fclose(fichero);
+    fclose(pntr_asccii);
     }
 }
 
-/* ====================== Menu principal ==================== */
-
-/* En el menu principal se encuentra las llamadas a las todas las funciones.*/
-
-void menu_principal() {
-	system("clear");
+//----- Menu principal ---------------------------------------------------------
+void menu() {
+	system("cls");
 	ascii_art();
 	printf("Menu Principal: \n");
 	printf("--------------------------------------------------------------------------------\n");
@@ -73,29 +73,31 @@ void menu_principal() {
 	printf("\n>> ");
 }
 
-void op_principal(int op) {
+void op_menu(int op) {
 	switch(op) { 
 			case 1:
 				menu_archivo();
 				break;
 			case 2: 
-				corrector_ort();
+				corrector();
 				getchar();
 				break;
 			case 3:
-				acerca_de();
 				getchar();
 				break;
 			case 4:
+				Leame();
+				getchar();
+				break;
+			case 5:
 				break;
 		} 
 }
 
-/* ====================== Menu opcion 1. (Archivo) ==================== */
-
+//----- Menu Archivo ---------------------------------------------------------
 void menu_archivo() {
 	do{ 
-		system("clear");
+		system("cls");
 		ascii_art();
 		printf("Menu Archivo\n");
 		printf("--------------------------------------------------------------------------------\n");
@@ -107,7 +109,7 @@ void menu_archivo() {
 
 		switch(opcion) {
 			case 1:
-				system("clear");
+				system("cls");
 				ascii_art();
 				nuevo_archivo();
 				getchar();
@@ -142,7 +144,7 @@ void nuevo_archivo() {
  			fputc(letras, temp);
  		}
 
-	system("clear");
+	system("cls");
 	ascii_art();
  	printf("Gurdar Como: \n");
 	printf("--------------------------------------------------------------------------------\n");
@@ -179,7 +181,7 @@ void nuevo_archivo() {
 
 
 void abiri_archivo() {
-	system("clear");
+	system("cls");
 	ascii_art();
 	fichero = fopen("Nuevo archivo.txt","r");
 	char caracter;
@@ -218,9 +220,9 @@ void abiri_archivo() {
 
 /* ====================== Corrector Ortografico ==================== */
 
-void corrector_ort() {
+void corrector() {
 		do{ 
-		system("clear");
+		system("cls");
 		ascii_art();
 		printf("Corrector Ortografico\n");
 		printf("--------------------------------------------------------------------------------\n");
@@ -232,13 +234,13 @@ void corrector_ort() {
 
 		switch(opcion) {
 			case 1:
-				system("clear");
+				system("cls");
 				ascii_art();
 				corregir_texto();
 				getchar();
 				break;
 			case 2:
-				system("clear");
+				system("cls");
 				ascii_art();
 				ver_diccionario();
 				getchar();
@@ -265,29 +267,28 @@ void corregir_texto() {
 
 // abrir archivo de diccionario
 void ver_diccionario() {
-	char caracter;
-	dict_fptr = fopen(arch_dict,"r");
+	puntr_dicc = fopen(ruta_dicc,"r");
 
-	if (dict_fptr == NULL)
+	if (puntr_dicc == NULL)
     {
     	printf("Corrector Ortografico\n");
     	printf("--------------------------------------------------------------------------------\n");
-    	printf("\n*** ERROR al abrir el archivo del diccionario (%s) *** ", arch_dict);
+    	printf("\n*** ERROR al abrir el archivo del diccionario (%s) *** ", ruta_dicc);
     	printf("--------------------------------------------------------------------------------\n");
     }
     else
     {	
     	printf("Corrector Ortografico\n");
     	printf("--------------------------------------------------------------------------------\n");
-    	printf("\n Las palabras almacenadas en el diccionario son: \n");
-    	printf("--------------------------------------------------------------------------------\n");
+    	printf("Palabras almacenadas en el Diccionario (%s)\n", ruta_dicc);
+    	printf("--------------------------------------------------------------------------------\n\n");
 		
-		while((caracter = fgetc(fichero)) != EOF)
+		while((caracter = fgetc(puntr_dicc)) != EOF)
         {
             printf("%c", caracter);
         }
     }
-    fclose(fichero);
+    fclose(puntr_dicc);
 }
 
 
@@ -315,34 +316,19 @@ void ver_diccionario() {
 
 
 
-/* ====================== Acerca de ==================== */
-
-void acerca_de() {
-	system("clear");
+//----- Acerca del programa ----------------------------------------------------
+void Leame() {
+	system("cls");
 	ascii_art();
-	char caracter;
-	fichero = fopen("Léame.md","r");
-	if (fichero == NULL) {
-    	printf("\nError al cargar la cabecera ascii del programa . . .\n\n");
+
+	pntr_leame = fopen(ruta_leame,"r");
+	if (pntr_leame == NULL) {
+    	printf("\nError al cargar el archivo (%s)\n\n", ruta_leame);
     } 
     else {
-    	while((caracter = fgetc(fichero)) != EOF) {
+    	while((caracter = fgetc(pntr_leame)) != EOF) {
             printf("%c", caracter);
         }
-    fclose(fichero);
+    fclose(pntr_leame);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
