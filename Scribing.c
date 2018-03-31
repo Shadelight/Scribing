@@ -16,7 +16,8 @@ char ruta_leame[] = "Léame.md";
 FILE *pntr_leame;
 FILE *pntr_asccii;
 FILE *puntr_dicc;
-FILE *fichero;
+FILE *nuevo_arch;
+FILE *abrir_arch;
 int opcion;
 char caracter;
 
@@ -30,12 +31,13 @@ void abiri_archivo();
 void corrector();
 void corregir_texto();
 void cargar_archivo();
+void menu_diccionario();
 void ver_diccionario();
 void Leame();
 
 //----- Programa principal -----------------------------------------------------
 int main() { 
-	
+
 	do { 
 		menu();
 		scanf("%d", &opcion);
@@ -52,7 +54,7 @@ int main() {
 void ascii_art() {
 	pntr_asccii = fopen(ruta_asccii,"r");
 	if (pntr_asccii == NULL) {
-    	printf("\nError al cargar la cabecera (%s) ascii del programa \n\n", ruta_asccii);
+    	printf("\nError al cargar la cabecera (%s) ascii del programa. \n\n", ruta_asccii);
     } 
     else {
     	while((caracter = fgetc(pntr_asccii)) != EOF) {
@@ -64,9 +66,9 @@ void ascii_art() {
 
 //----- Menu principal ---------------------------------------------------------
 void menu() {
-	system("cls");
+	system("clear");
 	ascii_art();
-	printf("Menu Principal: \n");
+	printf("Menu Principal\n");
 	printf("--------------------------------------------------------------------------------\n");
 	printf("1. Archivo  |  2. Corrector | 3. Diccionario |  4. Acerca de   |  5. Salir\n");
 	printf("--------------------------------------------------------------------------------\n");
@@ -80,10 +82,9 @@ void op_menu(int op) {
 				break;
 			case 2: 
 				corrector();
-				getchar();
 				break;
 			case 3:
-				getchar();
+				menu_diccionario();
 				break;
 			case 4:
 				Leame();
@@ -97,7 +98,7 @@ void op_menu(int op) {
 //----- Menu Archivo ---------------------------------------------------------
 void menu_archivo() {
 	do{ 
-		system("cls");
+		system("clear");
 		ascii_art();
 		printf("Menu Archivo\n");
 		printf("--------------------------------------------------------------------------------\n");
@@ -109,7 +110,7 @@ void menu_archivo() {
 
 		switch(opcion) {
 			case 1:
-				system("cls");
+				system("clear");
 				ascii_art();
 				nuevo_archivo();
 				getchar();
@@ -135,8 +136,9 @@ void nuevo_archivo() {
 
 	printf("Nuevo archivo\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("(presione ENTER para guardar)\n");
+	printf("Ingrese el contenido que desee\n");
 	printf("--------------------------------------------------------------------------------\n");
+	printf("(presione ENTER para guardar)\n");
  	printf("\n~ ");
 
 		while((letras = getchar()) != '\n')
@@ -144,89 +146,101 @@ void nuevo_archivo() {
  			fputc(letras, temp);
  		}
 
-	system("cls");
+	system("clear");
 	ascii_art();
- 	printf("Gurdar Como: \n");
+	printf("Nuevo archivo\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("(presione ENTER para guardar)\n");
+ 	printf(">> Gurdar Como:\n");
 	printf("--------------------------------------------------------------------------------\n");
- 	printf("Nombre:\n ");
- 	gets(nombre);
- 	printf("Tipo: \n");
- 	gets(tipo);
+ 	printf("\nNombre:\n");
+ 	printf(">> ");
+ 	fgets(nombre, sizeof(nombre), stdin);
+	nombre[strlen(nombre) - 1] = '\0';
+ 	printf("\n\nTipo: \n");
+ 	printf("(.txt o .odt)\n");
+ 	printf(">> ");
+ 	fgets(tipo, sizeof(tipo), stdin);
+	tipo[strlen(tipo) - 1] = '\0';
 
- 	/* Concatenar el nombre del archivo con la extensión */
+ 	// Concatenar el nombre del archivo con el tipo
     strcpy( nom_compl, nombre );
     strcat( nom_compl, tipo );
 
-    fichero = fopen(nom_compl,"w");
+    nuevo_arch = fopen(nom_compl,"w");
 
-    if(fichero == NULL) {
-		printf("\n\n\nNo se pudo crear el archivo . . .");
+    if(nuevo_arch == NULL) {
+		printf("\n\nNo se pudo crear el archivo . . .");
 	}
 	else {
-		/* Copia el contenido guardado en temp al nuevo archivo creado 
-		por el usuario */
-		while ( (letras = fgetc ( temp )) != EOF ) {
-        	fputc ( letras, fichero );
-    	}
-		printf("\n\n\nSu archivo se ha guardado con exito . . .");
+
+    	system("clear");
+		ascii_art();
+		printf("Nuevo archivo:\n");
+		printf("--------------------------------------------------------------------------------\n");
+ 		printf(">> Gurdar Como\n");
+		printf("--------------------------------------------------------------------------------\n");
+		printf("\nSu archivo (%s) se ha guardado con exito . . .", nom_compl);
 		fclose(temp);
-		fclose(fichero);
+		fclose(nuevo_arch);
 		remove("temp.txt");
     }
 
 }
 
-
-
 void abiri_archivo() {
-	system("cls");
+	system("clear");
 	ascii_art();
-	fichero = fopen("Nuevo archivo.txt","r");
+	char  nombre[60], tipo[6], nom_compl[100];
+	printf("Menu Archivo\n");
+	printf("--------------------------------------------------------------------------------\n");
+	printf("Ingrese el nombre + el tipo del archivo que desea abrir:\n");
+	printf("--------------------------------------------------------------------------------\n");	
+	 printf("\nNombre:\n");
+ 	printf(">> ");
+ 	fgets(nombre, sizeof(nombre), stdin);
+	nombre[strlen(nombre) - 1] = '\0';
+ 	printf("\n\nTipo: \n");
+ 	printf("(.txt o .odt)\n");
+ 	printf(">> ");
+ 	fgets(tipo, sizeof(tipo), stdin);
+	tipo[strlen(tipo) - 1] = '\0';
+
+ 	// Concatenar el nombre del archivo con el tipo
+    strcpy( nom_compl, nombre );
+    strcat( nom_compl, tipo );
+
+    abrir_arch = fopen(nom_compl,"r");
+
 	char caracter;
 
-	if(fichero == NULL) {
-		printf("Menu Archivo\n");
-		printf("--------------------------------------------------------------------------------\n");
-		printf("(presione ENTER para regresar)\n");
-		printf("--------------------------------------------------------------------------------\n");	
-		printf("No se pudo abrir el archivo . . .\n");
+	if(abrir_arch == NULL) {
+		printf("\nNo se pudo abrir el archivo . . .");
 	}
 	else {
-		printf("Nuevo archivo.txt\n");
+		system("clear");
+		ascii_art();
+		printf("%s\n", nom_compl);
 		printf("--------------------------------------------------------------------------------\n");
 		printf("(presione ENTER para regresar)\n");
 		printf("--------------------------------------------------------------------------------\n");
-		printf("~ ");
-        while((caracter = fgetc(fichero)) != EOF) {
+		printf("\n~ ");
+
+        while((caracter = fgetc(abrir_arch)) != EOF) {
 			printf("%c",caracter);
 	    }
 
-		fclose(fichero);
+		fclose(abrir_arch);
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-/* ====================== Corrector Ortografico ==================== */
-
+//----- Corrector Ortografico -----------------------------------------------------
 void corrector() {
 		do{ 
-		system("cls");
+		system("clear");
 		ascii_art();
 		printf("Corrector Ortografico\n");
 		printf("--------------------------------------------------------------------------------\n");
-		printf("1. Corregir texto  |  2. Ver Diccionario  |  3. Regresar\n");
+		printf("1. Abrir Archivo  |  2. Regresar\n");
 		printf("--------------------------------------------------------------------------------\n");
 		printf("\n>> ");
 		scanf("%d", &opcion);
@@ -234,36 +248,66 @@ void corrector() {
 
 		switch(opcion) {
 			case 1:
-				system("cls");
+				system("clear");
 				ascii_art();
 				corregir_texto();
 				getchar();
 				break;
 			case 2:
-				system("cls");
-				ascii_art();
-				ver_diccionario();
-				getchar();
-				break;
-			case 3:
 				break;
 			default:
 				printf("Opcion incorrecta.\n");
 				break;
 		}	
-	} while( opcion != 3);
+	} while( opcion != 2);
 	
 }
 
-
-
+// corrector ortografico
 void corregir_texto() {
 	printf("Corrector Ortografico\n");
 	printf("--------------------------------------------------------------------------------\n");
-	printf("En desarrollo...\n");
+	printf("Funcion en desarrollo...\n");
 	printf("--------------------------------------------------------------------------------\n");
 	printf("\n>> ");
 }
+
+
+
+void menu_diccionario(){
+	do{
+		system("clear");
+		ascii_art();
+		printf("Menu Diccionario\n");
+		printf("--------------------------------------------------------------------------------\n");
+		printf("1. Añadir palabras al diccionario  |  2. Ver Diccionario  |  3. Regresar\n");
+		printf("--------------------------------------------------------------------------------\n");
+		printf("\n>> ");
+		scanf("%d", &opcion);
+		while (getchar() != '\n');
+
+		switch(opcion)
+		{
+			case 1:
+				printf("En desarrollo\n");
+				getchar();
+				break; 
+			case 2:
+				system("clear");
+				ascii_art();
+				ver_diccionario();
+				getchar();
+				break;
+			case 3: 
+				break;
+			default:
+				printf("Opcion incorrecta.\n");
+				getchar();
+				break;
+		}
+	}while(opcion !=3);
+}
+
 
 // abrir archivo de diccionario
 void ver_diccionario() {
@@ -271,16 +315,16 @@ void ver_diccionario() {
 
 	if (puntr_dicc == NULL)
     {
-    	printf("Corrector Ortografico\n");
+    	printf("Menu Diccionario\n");
     	printf("--------------------------------------------------------------------------------\n");
-    	printf("\n*** ERROR al abrir el archivo del diccionario (%s) *** ", ruta_dicc);
+    	printf("ERROR al abrir (%s)\n", ruta_dicc);
     	printf("--------------------------------------------------------------------------------\n");
     }
     else
     {	
-    	printf("Corrector Ortografico\n");
+    	printf("Menu Diccionario\n");
     	printf("--------------------------------------------------------------------------------\n");
-    	printf("Palabras almacenadas en el Diccionario (%s)\n", ruta_dicc);
+    	printf("Palabras almacenadas en (%s)\n", ruta_dicc);
     	printf("--------------------------------------------------------------------------------\n\n");
 		
 		while((caracter = fgetc(puntr_dicc)) != EOF)
@@ -291,34 +335,9 @@ void ver_diccionario() {
     fclose(puntr_dicc);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //----- Acerca del programa ----------------------------------------------------
 void Leame() {
-	system("cls");
+	system("clear");
 	ascii_art();
 
 	pntr_leame = fopen(ruta_leame,"r");
