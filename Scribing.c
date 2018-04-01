@@ -4,15 +4,16 @@
  *         modificar un archivo tipo odt ó txt.                            *
  *         proyecto de la asignatura: Técnica de Programación 1            *
  **************************************************************************/
-//----- Librerias Incluidas ----------------------------------------------------
+//----- Librerias Incluidas 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-//----- Variables globales -----------------------------------------------------
+//----- Variables globales 
 char ruta_dicc[] = "Diccionario.txt";
 char ruta_asccii[] = "Ascii.txt";
 char ruta_leame[] = "Léame.md";
+char linea[] = "--------------------------------------------------------------------------------";
 FILE *pntr_leame;
 FILE *pntr_asccii;
 FILE *puntr_dicc;
@@ -21,7 +22,7 @@ FILE *abrir_arch;
 int opcion;
 char caracter;
 
-//----- Prototipos de función --------------------------------------------------
+//----- Prototipos de función 
 void ascii_art();
 void menu();
 void op_menu(int);
@@ -32,10 +33,11 @@ void corrector();
 void corregir_texto();
 void cargar_archivo();
 void menu_diccionario();
+void add_dicc();
 void ver_diccionario();
 void Leame();
 
-//----- Programa principal -----------------------------------------------------
+//----- Programa principal 
 int main() { 
 
 	do { 
@@ -69,9 +71,9 @@ void menu() {
 	system("clear");
 	ascii_art();
 	printf("Menu Principal\n");
-	printf("--------------------------------------------------------------------------------\n");
+	printf("%s\n", linea);
 	printf("1. Archivo  |  2. Corrector | 3. Diccionario |  4. Acerca de   |  5. Salir\n");
-	printf("--------------------------------------------------------------------------------\n");
+	printf("%s\n", linea);
 	printf("\n>> ");
 }
 
@@ -101,9 +103,9 @@ void menu_archivo() {
 		system("clear");
 		ascii_art();
 		printf("Menu Archivo\n");
-		printf("--------------------------------------------------------------------------------\n");
+		printf("%s\n", linea );
 		printf("1. Nuevo  |  2. Abrir  |  3. Regresar  \n");
-		printf("--------------------------------------------------------------------------------\n");
+		printf("%s\n", linea );
 		printf("\n>> ");
 		scanf("%d", &opcion);
 		while (getchar() != '\n');
@@ -280,7 +282,7 @@ void menu_diccionario(){
 		ascii_art();
 		printf("Menu Diccionario\n");
 		printf("--------------------------------------------------------------------------------\n");
-		printf("1. Añadir palabras al diccionario  |  2. Ver Diccionario  |  3. Regresar\n");
+		printf("1. Añadir palabras  |  2. Ver Diccionario  |  3. Regresar\n");
 		printf("--------------------------------------------------------------------------------\n");
 		printf("\n>> ");
 		scanf("%d", &opcion);
@@ -289,7 +291,9 @@ void menu_diccionario(){
 		switch(opcion)
 		{
 			case 1:
-				printf("En desarrollo\n");
+				system("clear");
+				ascii_art();
+				add_dicc();
 				getchar();
 				break; 
 			case 2:
@@ -308,6 +312,36 @@ void menu_diccionario(){
 	}while(opcion !=3);
 }
 
+// añadir palabras al diccionario
+void add_dicc(){
+	puntr_dicc = fopen(ruta_dicc,"at"); //modo agregar texto
+
+	if (puntr_dicc == NULL)
+    {
+    	printf("Menu Diccionario\n");
+    	printf("--------------------------------------------------------------------------------\n");
+    	printf("ERROR al abrir (%s)\n", ruta_dicc);
+    	printf("--------------------------------------------------------------------------------\n");
+    }
+    else
+    {	
+    	system("clear");
+    	ascii_art();
+    	printf("Menu Diccionario\n");
+    	printf("--------------------------------------------------------------------------------\n");
+    	printf("Ingrese la palabra que desea agregar al diccionario\n");
+    	printf("--------------------------------------------------------------------------------\n\n");
+    	printf("~ ");
+		// insertar salto de linea antes de agregar la nueva palabra
+        fputs("\n",puntr_dicc); 
+
+			while((caracter = getchar()) != '\n')
+        	{
+            		fputc(caracter, puntr_dicc);
+        	}
+    }
+    fclose(puntr_dicc);
+}
 
 // abrir archivo de diccionario
 void ver_diccionario() {
